@@ -19,4 +19,8 @@ var io = socketio(server);
 // will fire event
 io.on('connection', function (socket) {
   console.log('Client connected:', socket.id);
+
+  socket.on('disconnect', function () {
+    console.log('Client disconnected:', socket.id);
+  });
 });
