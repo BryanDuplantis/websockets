@@ -5,9 +5,42 @@
   </head>
   <body>
     <h1>SebWockets</h1>
+    <form>
+      <input>
+      <input type="submit">
+    </form>
+
+    <ul></ul>
     <script src="/lib/socket.io-client/socket.io.js"></script>
     <script>
+      var form = document.querySelector('form');
+      var input = document.querySelector('input');
+
+      form.addEventListener('submit', function () {
+        var text = input.value;
+
+        socket.emit('chatMessage', {message: text});
+        input.value = '';
+        event.preventDefault();
+      });
+
       var socket = io();
+
+      socket.on('connect', function (obj) {
+        console.log(socket.id);
+      });
+
+      socket.on('message', function (msg) {
+        console.log('Message received:', msg);
+      });
+
+      function genLIElement(message){
+        var li = document.createElement('li');
+        var text = document.createTextNode(message);
+
+        li.appendChild(text);
+        return li;
+      }
     </script>
   </body>
 </html>
