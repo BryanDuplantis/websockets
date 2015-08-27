@@ -14,4 +14,9 @@ var server = app.listen(3000, function () {
 });
 
 // have to pass server into socket.io
-socketio(server);
+var io = socketio(server);
+// listening for event called connection, socket library
+// will fire event
+io.on('connection', function (socket) {
+  console.log('Client connected:', socket.id);
+});
