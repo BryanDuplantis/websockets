@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SebWockets</title>
+    <meta charset="utf-8">
+    <title>SebWockets Demo</title>
   </head>
   <body>
     <h1>SebWockets</h1>
     <form>
-      <input>
+      <input name="name" placeholder="Sunny">
+      <input name="text" placeholder="Love Is All You Need">
       <input type="submit">
     </form>
-
     <ul></ul>
     <script src="/lib/socket.io-client/socket.io.js"></script>
     <script>
       var form = document.querySelector('form');
-      var input = document.querySelector('input');
-
+      var nameInput = document.querySelector('input[name="name"]');
+      var textInput = document.querySelector('input[name="text"]');
+      var ul = document.querySelector('ul');
+      var socket = io();
       form.addEventListener('submit', function () {
-        var text = input.value;
-
-        socket.emit('chatMessage', {message: text});
-        input.value = '';
+        var name = nameInput.value;
+        var text = textInput.value;
+        socket.emit('sentChatMessage', {name: name, text: text});
+        textInput.value = '';
         event.preventDefault();
       });
-
-      var socket = io();
-
-      socket.on('connect', function (obj) {
-        console.log(socket.id);
+      socket.on('connect', function () {
+        console.log('Socket connected:', socket.id);
       });
-
-      socket.on('message', function (msg) {
-        console.log('Message received:', msg);
+      socket.on('disconnect', function () {
+        console.log('Socket disconnected');
       });
-
-      function genLIElement(message){
+      socket.on('recievedChatMessage', function (msg) {
+        var li = genLIElement(msg);
+        ul.appendChild(li);
+      });
+      function genLIElement(message) {
+        var name = message.name;
+        var text = message.text;
         var li = document.createElement('li');
-        var text = document.createTextNode(message);
-
-        li.appendChild(text);
+        var textNode = document.createTextNode(name + ': ' + text);
+        li.appendChild(textNode);
         return li;
       }
     </script>
